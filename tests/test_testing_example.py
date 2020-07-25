@@ -7,10 +7,21 @@ from testing_example.main import(
      circle_area, 
      circle, 
      triangle_area,
+     triangle, 
      area_by_shape,
 )
 from testing_example import __version__
 
+@pytest.fixture
+def setup():
+    #list, tuple, if's?, dict
+    set_up_dict = {
+        "circle": circle, 
+        "square": square, 
+        "triangle": triangle,
+    }
+
+    return set_up_dict
 
 def test_version():
     assert __version__ == '0.1.0'
@@ -27,8 +38,6 @@ squ_params = [
 @pytest.mark.parametrize('label, actual, expected', squ_params)
 def test_square_parameterized(actual, expected, label): 
     
-
-
     assert square_area(actual) == expected
 
 def test_square_area_happy_path(): #Parameterize 
@@ -55,12 +64,12 @@ def test_square_area_is_tup(): #Parameterize
     actual = type(square_area(1)) 
     assert actual == expected
 
-def test_add_to_square_to_save_dict(): 
+def test_add_to_square_to_save_dict():#fixture
     square = {}
     save_dict((2, 4), square)
     assert len(square.keys()) == 1
 
-def test_add_to_square_to_save_dict_val(): 
+def test_add_to_square_to_save_dict_val(): #fixture
     square = {}
     save_dict((2,4), square)
     assert square[2] == 4
@@ -93,16 +102,16 @@ def test_circle_dict_exists():
 def test_square_dict_exists(): 
     assert square == {}
 
-def test_add_circle_to_save_dict(): 
-    circle = {} 
-    save_dict((5, 19.63), circle)
+def test_add_circle_to_save_dict(setup): #fixture
+    #circle = circle_setup
+    save_dict((5, 19.63), setup["circle"])
     expected = 1 
     actual = len(circle)
     assert actual == expected 
 
-def test_add_circle_to_save_dict_val(): 
-    circle = {}
-    save_dict((5, 19.63), circle) 
+def test_add_circle_to_save_dict_val(setup): #fixture
+    #circle = {}
+    save_dict((5, 19.63), setup["circle"]) 
     expected = 19.63 
     actual = circle[5]
     assert actual == expected
@@ -110,10 +119,19 @@ def test_add_circle_to_save_dict_val():
 def test_triangle_area_exists(): 
     assert triangle_area
 
-def test_triangle_area_happy_path(): #Parameterize
-    expected = 4, 3, 6
-    actual = triangle_area(4, 3)
-    assert actual == expected
+tri_param = [('zeros', (0,0), (0,0,0)), ('basic_pos', (4,3), (4,3,6)), ('basic_negative', (-4,-6), (-4,-6,12)), ("basic_mixed", (-4, 6), (-4,6,-12)), ("all_deci", (.6, .7),(.6,.7,.21)), ("one_deci", (.8, 4), (.8, 4, 1.6)), ("one_tens", (48,4), (48,4,96))]
+
+@pytest.mark.parametrize('label, actual, expected', tri_param)
+def test_triangle_param(actual, expected, label):
+    height = actual[1]
+    base = actual[0]
+    assert triangle_area(base, height) == expected 
+
+
+# def test_triangle_area_happy_path(): #Parameterize
+#     expected = 4, 3, 6
+#     actual = triangle_area(4, 3)
+#     assert actual == expected
 
 # def test_triangle_zero():
 #     expected = 0, 0, 0
@@ -136,12 +154,12 @@ def test_triangle_area_happy_path(): #Parameterize
 #     with pytest.raises(TypeError): 
 #         triangle_area("why is this getting a string?")
 
-def test_add_triangle_to_save_dict(): 
-    triangle = {}
-    save_dict(((4, 3), 6,), triangle)
-    assert len(triangle) == 1
+def test_add_triangle_to_save_dict(setup): #fixture
+    #triangle = {}
+    save_dict(((4, 3), 6,), setup["triangle"])
+    assert len(setup["triangle"]) == 1
 
-def test_add_triangle_to_save_dict_val():
+def test_add_triangle_to_save_dict_val(): #fixture
     triangle = {}
     save_dict(((4, 3), 6), triangle)
     assert triangle[4,3] == 6 

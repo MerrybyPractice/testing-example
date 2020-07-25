@@ -16,8 +16,9 @@
 ## Functionality to finish
 
 
-8. test 50 unique test cases for each exsisting method.
-9. Write unit tests for the area methods and the retreival method that run without any input or knowledge that the other exsisting.
+8. test several meaningful and unique test cases for each exsisting method.
+   
+9.  Write unit tests for the area methods and the retreival method that run without any input or knowledge that the other exsisting.
 
 
 
